@@ -1,0 +1,354 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Offer Management API",
+    "description": "This API allows users to manage offers for IT services. It provides endpoints for creating, retrieving, updating, and deleting offers, as well as managing the status of offers and assigning workers to offers.\n",
+    "contact": {
+      "name": "Lucie Trnkova",
+      "email": "lucie.trnkova@1pf.cz"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v1"
+    }
+  ],
+  "paths": {
+    "/offers": {
+      "post": {
+        "summary": "Create a new offer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all offers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfferDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/{offerId}": {
+      "get": {
+        "summary": "Get an offer by ID",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an offer",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Offer updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an offer",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Offer deleted"
+          }
+        }
+      }
+    },
+    "/offers/{offerId}/status": {
+      "get": {
+        "summary": "Get the status of an offer",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferStatusDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the status of an offer",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferStatusDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Offer status updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferStatusDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/{offerId}/workers": {
+      "post": {
+        "summary": "Add a worker to an offer",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer to add the worker to",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkerDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Worker added"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove an offer from a worker",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the offer to remove the worker from",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Order removed from this worker"
+          }
+        }
+      }
+    },
+    "/offers/{offerId}/workers/{workerId}": {
+      "delete": {
+        "summary": "Remove a worker from an offer",
+        "parameters": [
+          {
+            "name": "offerId",
+            "in": "path",
+            "description": "ID of the worker to remove the offer from",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "workerId",
+            "in": "path",
+            "description": "ID of the worker to remove",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Worker removed from order"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OfferDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "ACCEPTED",
+              "REJECTED",
+              "IN_PROGRESS",
+              "READY_TO_BE_SHOWN",
+              "CUSTOMER_APPROVAL",
+              "CUSTOMER_DISAPPROVAL",
+              "FIXING_BUGS",
+              "COMPLETED"
+            ]
+          },
+          "customerId": {
+            "type": "integer"
+          },
+          "supplierId": {
+            "type": "integer"
+          },
+          "workerIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "OfferStatusDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkerDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
