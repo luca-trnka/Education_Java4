@@ -177,6 +177,231 @@ paths:
       responses:
         '204':
           description: Worker removed from order
+  /customers:
+    post:
+      summary: Create a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+    get:
+      summary: Get all customers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerDTO'
+    /customers/{customerId}:
+      get:
+        summary: Get a customer by ID
+        parameters:
+          - name: customerId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/CustomerDTO'
+      put:
+        summary: Update a customer
+        parameters:
+          - name: customerId
+            in: path
+            required: true
+            schema:
+              type: integer
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/CustomerDTO'
+      delete:
+        summary: Delete a customer
+        parameters:
+          - name: customerId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '204':
+            description: No Content
+    /suppliers:
+      post:
+        summary: Create a new supplier
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierDTO'
+        responses:
+          '201':
+            description: Created
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SupplierDTO'
+      get:
+        summary: Get all suppliers
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SupplierDTO'
+    /suppliers/{supplierId}:
+      get:
+        summary: Get a supplier by ID
+        parameters:
+          - name: supplierId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SupplierDTO'
+      put:
+        summary: Update a supplier
+        parameters:
+          - name: supplierId
+            in: path
+            required: true
+            schema:
+              type: integer
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierDTO'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SupplierDTO'
+      delete:
+        summary: Delete a supplier
+        parameters:
+          - name: supplierId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '204':
+            description: No Content
+    /workers:
+      post:
+        summary: Create a new worker
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerDTO'
+        responses:
+          '201':
+            description: Created
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/WorkerDTO'
+      get:
+        summary: Get all workers
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkerDTO'
+    /workers/{workerId}:
+      get:
+        summary: Get a worker by ID
+        parameters:
+          - name: workerId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/WorkerDTO'
+      put:
+        summary: Update a worker
+        parameters:
+          - name: workerId
+            in: path
+            required: true
+            schema:
+              type: integer
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerDTO'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/WorkerDTO'
+      delete:
+        summary: Delete a worker
+        parameters:
+          - name: workerId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '204':
+            description: No Content
 components:
   schemas:
     OfferDTO:
@@ -188,7 +413,7 @@ components:
           type: string
         status:
           type: string
-          enum: [NEW, ACCEPTED, REJECTED, IN_PROGRESS, READY_TO_BE_SHOWN, CUSTOMER_APPROVAL, CUSTOMER_DISAPPROVAL, FIXING_BUGS, COMPLETED]
+          enum: [NEW, ACCEPTED, REJECTED, IN_PROGRESS, READY_TO_BE_SHOWN, CUSTOMER_APPROVAL, CUSTOMER_DISAPPROVAL, FIXING_BUGS, INVOICED, COMPLETED]
         customerId:
           type: integer
         supplierId:
@@ -202,6 +427,24 @@ components:
       properties:
         status:
           type: string
+    CustomerDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        contactDetails:
+          type: string
+    SupplierDTO:
+      type: object
+      properties:
+        id:
+         type: integer
+        name:
+         type: string
+        contactDetails:
+         type: string
     WorkerDTO:
       type: object
       properties:
