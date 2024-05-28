@@ -720,7 +720,7 @@
           "name": {
             "type": "string"
           },
-          "contactDetails": {
+          "email": {
             "type": "string"
           }
         }
@@ -734,7 +734,7 @@
           "name": {
             "type": "string"
           },
-          "contactDetails": {
+          "email": {
             "type": "string"
           }
         }

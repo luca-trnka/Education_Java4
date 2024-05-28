@@ -434,7 +434,7 @@ components:
           type: integer
         name:
           type: string
-        contactDetails:
+        email:
           type: string
     SupplierDTO:
       type: object
@@ -443,7 +443,7 @@ components:
          type: integer
         name:
          type: string
-        contactDetails:
+        email:
          type: string
     WorkerDTO:
       type: object
