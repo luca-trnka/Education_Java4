@@ -750,6 +750,9 @@
           },
           "email": {
             "type": "string"
+          },
+          "supplierId": {
+            "type": "integer"
           }
         }
       }

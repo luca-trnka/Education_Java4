@@ -454,3 +454,5 @@ components:
           type: string
         email:
           type: string
+        supplierId:
+          type: integer
