@@ -25,6 +25,13 @@ public class Customer {
         this.offers = offers;
     }
 
+    public Customer(Long id, String name, String email, List<Offer> offers) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.offers = offers;
+    }
+
     public Long getId() {
         return id;
     }

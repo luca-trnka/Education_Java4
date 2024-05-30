@@ -33,6 +33,15 @@ public class Offer {
         this.workers = workers;
     }
 
+    public Offer(Long id, String description, OfferStatus status, Customer customer, Supplier supplier, List<Worker> workers) {
+        this.id = id;
+        this.description = description;
+        this.status = status;
+        this.customer = customer;
+        this.supplier = supplier;
+        this.workers = workers;
+    }
+
     public Long getId() {
         return id;
     }

@@ -29,6 +29,14 @@ public class Worker {
         this.supplier = supplier;
     }
 
+    public Worker(Long id, String name, String email, List<Offer> offers, Supplier supplier) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.offers = offers;
+        this.supplier = supplier;
+    }
+
     public Long getId() {
         return id;
     }
