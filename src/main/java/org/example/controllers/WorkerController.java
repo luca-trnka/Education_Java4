@@ -33,9 +33,9 @@ public class WorkerController {
     }
 
     @PostMapping
-    public WorkerDTO createWorker(@RequestBody WorkerDTO workerDTO) {
+    public WorkerDTO createWorker(@RequestParam Long supplierId, @RequestBody WorkerDTO workerDTO) {
         Worker worker = workerDTO.toEntity();
-        workerService.createWorker(worker);
+        workerService.createWorker(supplierId, worker);
         return WorkerDTO.fromEntity(worker);
     }
 

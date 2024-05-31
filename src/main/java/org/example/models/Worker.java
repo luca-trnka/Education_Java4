@@ -17,6 +17,7 @@ public class Worker {
     private List<Offer> offers;
 
     @ManyToOne
+    @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
     public Worker() {}

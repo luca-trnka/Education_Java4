@@ -1,7 +1,10 @@
 package org.example.services;
 
+import org.example.models.Supplier;
 import org.example.models.Worker;
+import org.example.repos.SupplierRepository;
 import org.example.repos.WorkerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,7 +12,11 @@ import java.util.Optional;
 
 @Service
 public class WorkerService {
-    private final WorkerRepository workerRepository;
+    @Autowired
+    private WorkerRepository workerRepository;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     public WorkerService(WorkerRepository workerRepository) {
         this.workerRepository = workerRepository;
@@ -23,7 +30,13 @@ public class WorkerService {
         return workerRepository.findById(id);
     }
 
-    public void createWorker(Worker worker) {
+    public void createWorker(Long supplierId,Worker worker) {
+        Supplier supplier = supplierRepository.findById(Math.toIntExact(supplierId))
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        worker.setSupplier(supplier);
+        supplier.getWorkers().add(worker);
+
         workerRepository.save(worker);
     }
 

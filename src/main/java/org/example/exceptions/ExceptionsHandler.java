@@ -27,4 +27,9 @@ public class ExceptionsHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        return ResponseEntity.badRequest().build();
+    }
+
 }
