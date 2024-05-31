@@ -3,10 +3,10 @@ package org.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-public class Main {
+@SpringBootApplication(scanBasePackages = "org.example")
+public class EducationJava4Application {
+
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args)
-        ;
+        SpringApplication.run(EducationJava4Application.class, args);
     }
 }

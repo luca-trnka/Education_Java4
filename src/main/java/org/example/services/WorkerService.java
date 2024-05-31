@@ -2,9 +2,12 @@ package org.example.services;
 
 import org.example.models.Worker;
 import org.example.repos.WorkerRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class WorkerService {
     private final WorkerRepository workerRepository;
 

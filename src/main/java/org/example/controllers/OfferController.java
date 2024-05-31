@@ -1,47 +1,74 @@
 package org.example.controllers;
 
+import org.example.exceptions.ResourceNotFoundException;
 import org.example.dtos.OfferDTO;
+import org.example.models.Offer;
+import org.example.models.OfferStatus;
 import org.example.services.OfferService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/offers")
 public class OfferController {
+    private final OfferService offerService;
 
-    @Autowired
-    private OfferService offerService;
-
-    @PostMapping
-    public ResponseEntity<OfferDTO> createOffer(@RequestBody OfferDTO offerDTO) {
-        OfferDTO createdOffer = offerService.createOffer(offerDTO);
-        return ResponseEntity.status(201).body(createdOffer);
+    public OfferController(OfferService offerService) {
+        this.offerService = offerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<OfferDTO>> getAllOffers() {
-        List<OfferDTO> offers = offerService.getAllOffers();
-        return ResponseEntity.ok(offers);
+    public List<OfferDTO> getAllOffers() {
+        return offerService.getAllOffers().stream()
+                .map(OfferDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/{offerId}")
-    public ResponseEntity<OfferDTO> getOfferById(@PathVariable Long offerId) {
-        OfferDTO offer = offerService.getOfferById(offerId);
-        return ResponseEntity.ok(offer);
+    @GetMapping("/{id}")
+    public OfferDTO getOfferById(@PathVariable Long id) {
+        return offerService.getOfferById(Math.toIntExact(id))
+                .map(OfferDTO::fromEntity)
+                .orElseThrow(() -> new ResourceNotFoundException("Offer not found"));
     }
 
-    @PutMapping("/{offerId}")
-    public ResponseEntity<OfferDTO> updateOffer(@PathVariable Long offerId, @RequestBody OfferDTO offerDTO) {
-        OfferDTO updatedOffer = offerService.updateOffer(offerId, offerDTO);
-        return ResponseEntity.ok(updatedOffer);
+    @PostMapping
+    public OfferDTO createOffer(@RequestBody OfferDTO offerDTO) {
+        Offer offer = offerDTO.toEntity();
+        offerService.createOffer(offer);
+        return OfferDTO.fromEntity(offer);
     }
 
-    @DeleteMapping("/{offerId}")
-    public ResponseEntity<Void> deleteOffer(@PathVariable Long offerId) {
-        offerService.deleteOffer(offerId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public void updateOffer(@PathVariable Long id, @RequestBody OfferDTO offerDTO) {
+        Offer offer = offerDTO.toEntity();
+        offer.setId(id);
+        offerService.updateOffer(offer);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteOffer(@PathVariable Long id) {
+        offerService.deleteOffer(Math.toIntExact(id));
+    }
+
+    @GetMapping("/{id}/status")
+    public OfferStatus getOfferStatus(@PathVariable Long id) {
+        return offerService.getOfferStatus(Math.toIntExact(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Offer not found"));
+    }
+
+    @PutMapping("/{id}/status")
+    public void updateOfferStatus(@PathVariable Long id, @RequestParam OfferStatus status) {
+        offerService.updateOfferStatus(Math.toIntExact(id), status);
+    }
+
+    @PostMapping("/{id}/workers/{workerId}")
+    public void addWorkerToOffer(@PathVariable Long id, @PathVariable Long workerId) {
+        offerService.addWorkerToOffer(Math.toIntExact(id), Math.toIntExact(workerId));
+    }
+
+    @DeleteMapping("/{id}/workers/{workerId}")
+    public void removeWorkerFromOffer(@PathVariable Long id, @PathVariable Long workerId) {
+        offerService.removeWorkerFromOffer(Math.toIntExact(id), Math.toIntExact(workerId));
     }
 }

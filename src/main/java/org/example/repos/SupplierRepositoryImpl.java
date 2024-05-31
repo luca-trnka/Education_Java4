@@ -1,12 +1,13 @@
 package org.example.repos;
 
 import org.example.models.Supplier;
-
+import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Repository
 public class SupplierRepositoryImpl implements SupplierRepository {
     private final List<Supplier> suppliers = new ArrayList<>();
     private final AtomicInteger counter = new AtomicInteger();

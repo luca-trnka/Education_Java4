@@ -1,7 +1,12 @@
 package org.example.dtos;
 
+import org.example.models.Offer;
+import org.example.models.Supplier;
+import org.example.models.Worker;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WorkerDTO {
     private Long id;
@@ -16,7 +21,15 @@ public class WorkerDTO {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.offerIds = offerIds;
+        this.offerIds = (offerIds != null) ? offerIds : new ArrayList<>();
+        this.supplierId = supplierId;
+    }
+
+    public WorkerDTO(Long id, String name, String email, Long supplierId) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.offerIds = new ArrayList<>();
         this.supplierId = supplierId;
     }
 
@@ -58,5 +71,45 @@ public class WorkerDTO {
 
     public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public static WorkerDTO fromEntity(Worker worker) {
+        List<Long> offerIds = worker.getOffers().stream().map(Offer::getId).collect(Collectors.toList());
+        return new WorkerDTO(
+                worker.getId(),
+                worker.getName(),
+                worker.getEmail(),
+                offerIds,
+                worker.getSupplier() != null ? worker.getSupplier().getId() : null
+        );
+    }
+
+    public Worker toEntity() {
+        Worker worker = new Worker();
+        worker.setId(this.id);
+        worker.setName(this.name);
+        worker.setEmail(this.email);
+
+        if (this.supplierId != null) {
+            Supplier supplier = new Supplier();
+            supplier.setId(this.supplierId);
+            worker.setSupplier(supplier);
+        }
+        if (this.offerIds == null) {
+            this.offerIds = new ArrayList<>();
+        }
+        List<Offer> offers = new ArrayList<>();
+        if (this.offerIds != null || !this.offerIds.isEmpty()) {
+            offers = this.offerIds.stream()
+                    .map(offerId -> {
+                        Offer offer = new Offer();
+                        offer.setId(offerId);
+                        return offer;
+                    })
+                    .collect(Collectors.toList());
+        }
+        worker.setOffers(offers);
+
+        return worker;
     }
 }

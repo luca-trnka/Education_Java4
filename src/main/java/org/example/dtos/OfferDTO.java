@@ -1,6 +1,10 @@
 package org.example.dtos;
 
+import org.example.models.*;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OfferDTO {
     private Long id;
@@ -69,5 +73,45 @@ public class OfferDTO {
         this.workerIds = workerIds;
     }
 
-    // Getters and Setters
+    public static OfferDTO fromEntity(Offer offer) {
+        return new OfferDTO(
+                offer.getId(),
+                offer.getDescription(),
+                offer.getStatus().name(),
+                offer.getCustomer().getId(),
+                offer.getSupplier().getId(),
+                offer.getWorkers().stream().map(worker -> worker.getId()).collect(Collectors.toList())
+        );
+    }
+
+    public Offer toEntity() {
+        Offer offer = new Offer();
+        offer.setId(this.id);
+        offer.setDescription(this.description);
+        offer.setStatus(OfferStatus.valueOf(this.status));
+
+        if (this.customerId != null) {
+            Customer customer = new Customer();
+            customer.setId(this.customerId);
+            offer.setCustomer(customer);
+        }
+
+        if (this.supplierId != null) {
+            Supplier supplier = new Supplier();
+            supplier.setId(this.supplierId);
+            offer.setSupplier(supplier);
+        }
+
+        List<Worker> workers = new ArrayList<>();
+        if (this.workerIds != null) {
+            for (Long workerId : this.workerIds) {
+                Worker worker = new Worker();
+                worker.setId(workerId);
+                workers.add(worker);
+            }
+        }
+        offer.setWorkers(workers);
+
+        return offer;
+    }
 }

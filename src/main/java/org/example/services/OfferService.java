@@ -4,9 +4,12 @@ import org.example.models.Offer;
 import org.example.models.OfferStatus;
 import org.example.repos.OfferRepository;
 import org.example.repos.WorkerRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class OfferService {
     private final OfferRepository offerRepository;
     private final WorkerRepository workerRepository;

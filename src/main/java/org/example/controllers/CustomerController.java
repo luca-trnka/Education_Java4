@@ -1,47 +1,63 @@
 package org.example.controllers;
 
 import org.example.dtos.CustomerDTO;
+import org.example.exceptions.ResourceNotFoundException;
+import org.example.models.Customer;
+import org.example.models.Offer;
 import org.example.services.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.example.services.OfferService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
+    private final CustomerService customerService;
+    private final OfferService offerService;
 
-    @Autowired
-    private CustomerService customerService;
-
-    @PostMapping
-    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) {
-        CustomerDTO createdCustomer = customerService.createCustomer(customerDTO);
-        return ResponseEntity.status(201).body(createdCustomer);
+    public CustomerController(CustomerService customerService, OfferService offerService) {
+        this.customerService = customerService;
+        this.offerService = offerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-        List<CustomerDTO> customers = customerService.getAllCustomers();
-        return ResponseEntity.ok(customers);
+    public List<CustomerDTO> getAllCustomers() {
+        return customerService.getAllCustomers().stream()
+                .map(CustomerDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/{customerId}")
-    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long customerId) {
-        CustomerDTO customer = customerService.getCustomerById(customerId);
-        return ResponseEntity.ok(customer);
+    @GetMapping("/{id}")
+    public CustomerDTO getCustomerById(@PathVariable Long id) {
+        return customerService.getCustomerById(Math.toIntExact(id))
+                .map(CustomerDTO::fromEntity)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
     }
 
-    @PutMapping("/{customerId}")
-    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long customerId, @RequestBody CustomerDTO customerDTO) {
-        CustomerDTO updatedCustomer = customerService.updateCustomer(customerId, customerDTO);
-        return ResponseEntity.ok(updatedCustomer);
+    @PostMapping
+    public CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO) {
+        List<Offer> offers = customerDTO.getOfferIds().stream()
+                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer not found")))
+                .collect(Collectors.toList());
+        Customer customer = customerDTO.toEntity();
+        customerService.createCustomer(customer);
+        return CustomerDTO.fromEntity(customer);
     }
 
-    @DeleteMapping("/{customerId}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long customerId) {
-        customerService.deleteCustomer(customerId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public void updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
+        List<Offer> offers = customerDTO.getOfferIds().stream()
+                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer not found")))
+                .collect(Collectors.toList());
+        Customer customer = customerDTO.toEntity();
+        customer.setId(id);
+        customerService.updateCustomer(customer);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(Math.toIntExact(id));
     }
 }

@@ -1,11 +1,14 @@
 package org.example.repos;
 
 import org.example.models.Offer;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Repository
 public class OfferRepositoryImpl implements OfferRepository {
     private final List<Offer> offers = new ArrayList<>();
     private final AtomicInteger counter = new AtomicInteger();

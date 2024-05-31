@@ -1,47 +1,53 @@
 package org.example.controllers;
 
+import org.example.exceptions.ResourceNotFoundException;
 import org.example.dtos.WorkerDTO;
+import org.example.models.Worker;
 import org.example.services.WorkerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/workers")
 public class WorkerController {
+    private final WorkerService workerService;
 
-    @Autowired
-    private WorkerService workerService;
-
-    @PostMapping
-    public ResponseEntity<WorkerDTO> createWorker(@RequestBody WorkerDTO workerDTO) {
-        WorkerDTO createdWorker = workerService.createWorker(workerDTO);
-        return ResponseEntity.status(201).body(createdWorker);
+    public WorkerController(WorkerService workerService) {
+        this.workerService = workerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkerDTO>> getAllWorkers() {
-        List<WorkerDTO> workers = workerService.getAllWorkers();
-        return ResponseEntity.ok(workers);
+    public List<WorkerDTO> getAllWorkers() {
+        return workerService.getAllWorkers().stream()
+                .map(WorkerDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/{workerId}")
-    public ResponseEntity<WorkerDTO> getWorkerById(@PathVariable Long workerId) {
-        WorkerDTO worker = workerService.getWorkerById(workerId);
-        return ResponseEntity.ok(worker);
+    @GetMapping("/{id}")
+    public WorkerDTO getWorkerById(@PathVariable Long id) {
+        return workerService.getWorkerById(Math.toIntExact(id))
+                .map(WorkerDTO::fromEntity)
+                .orElseThrow(() -> new ResourceNotFoundException("Worker not found"));
     }
 
-    @PutMapping("/{workerId}")
-    public ResponseEntity<WorkerDTO> updateWorker(@PathVariable Long workerId, @RequestBody WorkerDTO workerDTO) {
-        WorkerDTO updatedWorker = workerService.updateWorker(workerId, workerDTO);
-        return ResponseEntity.ok(updatedWorker);
+    @PostMapping
+    public WorkerDTO createWorker(@RequestBody WorkerDTO workerDTO) {
+        Worker worker = workerDTO.toEntity();
+        workerService.createWorker(worker);
+        return WorkerDTO.fromEntity(worker);
     }
 
-    @DeleteMapping("/{workerId}")
-    public ResponseEntity<Void> deleteWorker(@PathVariable Long workerId) {
-        workerService.deleteWorker(workerId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public void updateWorker(@PathVariable Long id, @RequestBody WorkerDTO workerDTO) {
+        Worker worker = workerDTO.toEntity();
+        worker.setId(id);
+        workerService.updateWorker(worker);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteWorker(@PathVariable Long id) {
+        workerService.deleteWorker(Math.toIntExact(id));
     }
 }

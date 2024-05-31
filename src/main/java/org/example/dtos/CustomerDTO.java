@@ -1,6 +1,10 @@
 package org.example.dtos;
 
+import org.example.models.Customer;
+import org.example.models.Offer;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomerDTO {
     private Long id;
@@ -17,37 +21,33 @@ public class CustomerDTO {
         this.offerIds = offerIds;
     }
 
-    public Long getId() {
-        return id;
+    public static CustomerDTO fromEntity(Customer customer) {
+        List<Long> offerIds = customer.getOffers().stream().map(Offer::getId).collect(Collectors.toList());
+        return new CustomerDTO(customer.getId(), customer.getName(), customer.getEmail(), offerIds);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Customer toEntity() {
+        Customer customer = new Customer();
+        customer.setId(this.id);
+        customer.setName(this.name);
+        customer.setEmail(this.email);
+        List<Offer> offers = this.offerIds.stream()
+                .map(offerId -> {
+                    Offer offer = new Offer();
+                    offer.setId(offerId);
+                    return offer;
+                })
+                .collect(Collectors.toList());
+        customer.setOffers(offers);
+        return customer;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Long> getOfferIds() {
-        return offerIds;
-    }
-
-    public void setOfferIds(List<Long> offerIds) {
-        this.offerIds = offerIds;
-    }
-
-    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public List<Long> getOfferIds() { return offerIds; }
+    public void setOfferIds(List<Long> offerIds) { this.offerIds = offerIds; }
 }

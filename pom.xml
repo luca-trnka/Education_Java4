@@ -10,7 +10,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-boot.version>2.7.12</spring-boot.version>
+        <spring-boot.version>3.1.5</spring-boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <version>2.1.214</version>
         </dependency>
 
         <!-- Spring Boot Test dependencies -->
