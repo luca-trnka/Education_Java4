@@ -47,4 +47,8 @@ public class WorkerService {
     public void deleteWorker(int id) {
         workerRepository.delete(id);
     }
+
+    public boolean workerExists(int id) {
+        return workerRepository.existsById(id);
+    }
 }

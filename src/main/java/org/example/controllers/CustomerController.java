@@ -38,9 +38,9 @@ public class CustomerController {
 
     @PostMapping
     public CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO) {
-        List<Offer> offers = customerDTO.getOfferIds().stream()
-                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer not found")))
-                .collect(Collectors.toList());
+//        List<Offer> offers = customerDTO.getOfferIds().stream()
+//                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer not found")))
+//                .collect(Collectors.toList());
         Customer customer = customerDTO.toEntity();
         customerService.createCustomer(customer);
         return CustomerDTO.fromEntity(customer);

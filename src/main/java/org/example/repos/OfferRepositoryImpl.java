@@ -40,4 +40,8 @@ public class OfferRepositoryImpl implements OfferRepository {
         offers.removeIf(offer -> offer.getId() == id);
     }
 
+    @Override
+    public boolean existsById(int id) {
+        return offers.stream().anyMatch(offer -> offer.getId() == id);
+    }
 }

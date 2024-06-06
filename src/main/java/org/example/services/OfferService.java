@@ -1,8 +1,9 @@
 package org.example.services;
 
-import org.example.models.Offer;
-import org.example.models.OfferStatus;
+import org.example.models.*;
+import org.example.repos.CustomerRepository;
 import org.example.repos.OfferRepository;
+import org.example.repos.SupplierRepository;
 import org.example.repos.WorkerRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +14,14 @@ import java.util.Optional;
 public class OfferService {
     private final OfferRepository offerRepository;
     private final WorkerRepository workerRepository;
+    private final SupplierRepository supplierRepository;
+    private final CustomerRepository customerRepository;
 
-    public OfferService(OfferRepository offerRepository, WorkerRepository workerRepository) {
+    public OfferService(OfferRepository offerRepository, WorkerRepository workerRepository, SupplierRepository supplierRepository, CustomerRepository customerRepository) {
         this.offerRepository = offerRepository;
         this.workerRepository = workerRepository;
+        this.supplierRepository = supplierRepository;
+        this.customerRepository = customerRepository;
     }
 
     public List<Offer> getAllOffers() {
@@ -27,7 +32,19 @@ public class OfferService {
         return offerRepository.findById(id);
     }
 
-    public void createOffer(Offer offer) {
+//    public void createOffer(Offer offer) {
+//        offerRepository.save(offer);
+//    }
+    public void createOffer(Long supplierId, Long customerId, Offer offer) {
+        Supplier supplier = supplierRepository.findById(Math.toIntExact(supplierId))
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+        Customer customer = customerRepository.findById(Math.toIntExact(customerId))
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        offer.setSupplier(supplier);
+        offer.setCustomer(customer);
+
+        supplier.getOffers().add(offer);
+        customer.getOffers().add(offer);
         offerRepository.save(offer);
     }
 
@@ -64,5 +81,9 @@ public class OfferService {
             offer.getWorkers().removeIf(worker -> worker.getId() == workerId);
             offerRepository.update(offer);
         });
+    }
+
+    public boolean offerExists(int id) {
+        return offerRepository.existsById(id);
     }
 }

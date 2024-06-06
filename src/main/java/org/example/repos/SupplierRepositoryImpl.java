@@ -38,4 +38,9 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     public void delete(int id) {
         suppliers.removeIf(supplier -> supplier.getId() == id);
     }
+
+    @Override
+    public boolean existsById(int id) {
+        return suppliers.stream().anyMatch(offer -> offer.getId() == id);
+    }
 }

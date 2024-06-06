@@ -34,4 +34,8 @@ public class CustomerService {
     public void deleteCustomer(int id) {
         customerRepository.delete(id);
     }
+
+    public boolean customerExists(int id) {
+        return customerRepository.existsById(id);
+    }
 }

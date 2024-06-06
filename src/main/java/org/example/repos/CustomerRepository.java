@@ -11,4 +11,5 @@ public interface CustomerRepository {
     void save(Customer customer);
     void update(Customer customer);
     void delete(int id);
+    boolean existsById(int id);
 }

@@ -10,4 +10,5 @@ public interface WorkerRepository {
     void save(Worker worker);
     void update(Worker worker);
     void delete(int id);
+    boolean existsById(int id);
 }

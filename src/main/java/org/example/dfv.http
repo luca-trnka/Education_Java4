@@ -1,0 +1,12 @@
+
+GET https://localhost:8080/suppliers
+Accept:application/json
+###
+
+POST https://localhost:8080/suppliers
+Content-Type: application/json
+
+{
+  "name": "value1",
+  "email": "value2"
+}

@@ -34,4 +34,8 @@ public class SupplierService {
     public void deleteSupplier(int id) {
         supplierRepository.delete(id);
     }
+
+    public boolean supplierExists(int id) {
+        return supplierRepository.existsById(id);
+    }
 }

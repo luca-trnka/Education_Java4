@@ -40,4 +40,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public void delete(int id) {
         customers.removeIf(customer -> customer.getId() == id);
     }
+
+    @Override
+    public boolean existsById(int id) {
+        return customers.stream().anyMatch(offer -> offer.getId() == id);
+    }
 }

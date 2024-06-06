@@ -10,4 +10,5 @@ public interface SupplierRepository {
     void save(Supplier supplier);
     void update(Supplier supplier);
     void delete(int id);
+    boolean existsById(int id);
 }

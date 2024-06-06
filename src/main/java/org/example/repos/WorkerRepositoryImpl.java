@@ -39,4 +39,9 @@ public class WorkerRepositoryImpl implements WorkerRepository {
     public void delete(int id) {
         workers.removeIf(worker -> worker.getId() == id);
     }
+
+    @Override
+    public boolean existsById(int id) {
+        return workers.stream().anyMatch(offer -> offer.getId() == id);
+    }
 }

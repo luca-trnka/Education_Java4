@@ -10,4 +10,5 @@ public interface OfferRepository {
     void save(Offer offer);
     void update(Offer offer);
     void delete(int id);
+    boolean existsById(int id);
 }

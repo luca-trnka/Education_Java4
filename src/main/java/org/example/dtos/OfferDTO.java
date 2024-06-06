@@ -3,26 +3,33 @@ package org.example.dtos;
 import org.example.models.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.String.valueOf;
 
 public class OfferDTO {
     private Long id;
     private String description;
-    private String status;
+    private OfferStatus status;
     private Long customerId;
     private Long supplierId;
     private List<Long> workerIds;
 
     public OfferDTO() {}
 
-    public OfferDTO(Long id, String description, String status, Long customerId, Long supplierId, List<Long> workerIds) {
+    public OfferDTO(Long id, String description, OfferStatus status, Long customerId, Long supplierId, List<Long> workerIds) {
         this.id = id;
         this.description = description;
         this.status = status;
         this.customerId = customerId;
         this.supplierId = supplierId;
         this.workerIds = workerIds;
+    }
+
+    public OfferDTO(Long id, String description, Long customerId, Long supplierId) {
+        this(id, description, OfferStatus.NEW, customerId, supplierId, new ArrayList<>());
     }
 
     public Long getId() {
@@ -41,11 +48,11 @@ public class OfferDTO {
         this.description = description;
     }
 
-    public String getStatus() {
+    public OfferStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OfferStatus status) {
         this.status = status;
     }
 
@@ -74,21 +81,27 @@ public class OfferDTO {
     }
 
     public static OfferDTO fromEntity(Offer offer) {
-        return new OfferDTO(
-                offer.getId(),
-                offer.getDescription(),
-                offer.getStatus().name(),
-                offer.getCustomer().getId(),
-                offer.getSupplier().getId(),
-                offer.getWorkers().stream().map(worker -> worker.getId()).collect(Collectors.toList())
-        );
+        OfferDTO dto = new OfferDTO();
+        dto.setId(offer.getId());
+        dto.setDescription(offer.getDescription());
+        dto.setStatus(offer.getStatus());
+        dto.setCustomerId(offer.getCustomer() != null ? offer.getCustomer().getId() : null);
+        dto.setSupplierId(offer.getSupplier() != null ? offer.getSupplier().getId() : null);
+        dto.setWorkerIds(offer.getWorkers().stream().map(Worker::getId).collect(Collectors.toList()));
+        return dto;
     }
 
     public Offer toEntity() {
         Offer offer = new Offer();
         offer.setId(this.id);
         offer.setDescription(this.description);
-        offer.setStatus(OfferStatus.valueOf(this.status));
+        if (this.status == null) {
+            this.status = OfferStatus.NEW;
+        }
+        if (!Arrays.asList(OfferStatus.values()).contains(this.status)) {
+            throw new IllegalArgumentException("Invalid status value: " + this.status);
+        }
+        offer.setStatus(this.status);
 
         if (this.customerId != null) {
             Customer customer = new Customer();

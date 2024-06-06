@@ -1,6 +1,8 @@
 package org.example.models;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +14,7 @@ public class Offer {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private OfferStatus status;
+    private OfferStatus status = OfferStatus.NEW; //default status is new
 
     @ManyToOne
     private Customer customer;
@@ -24,7 +26,9 @@ public class Offer {
     @ManyToMany
     private List<Worker> workers;
 
-    public Offer() {}
+    public Offer() {
+        workers = new ArrayList<>();
+    }
 
     public Offer(String description, OfferStatus status, Customer customer, Supplier supplier, List<Worker> workers) {
         this.description = description;
@@ -41,6 +45,10 @@ public class Offer {
         this.customer = customer;
         this.supplier = supplier;
         this.workers = workers;
+    }
+
+    public Offer(Long id, String description, Customer customer, Supplier supplier) {
+        this(id, description, OfferStatus.NEW, customer, supplier, new ArrayList<>());
     }
 
     public Long getId() {

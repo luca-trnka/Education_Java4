@@ -2,7 +2,9 @@ package org.example.dtos;
 
 import org.example.models.Customer;
 import org.example.models.Offer;
+import org.example.models.Worker;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,9 +23,24 @@ public class CustomerDTO {
         this.offerIds = offerIds;
     }
 
+    public CustomerDTO(Long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.offerIds = new ArrayList<>();
+    }
+
     public static CustomerDTO fromEntity(Customer customer) {
-        List<Long> offerIds = customer.getOffers().stream().map(Offer::getId).collect(Collectors.toList());
-        return new CustomerDTO(customer.getId(), customer.getName(), customer.getEmail(), offerIds);
+       List<Long> offerIds = customer.getOffers().stream()
+                .map(Offer::getId)
+                .collect(Collectors.toList());
+
+        return new CustomerDTO(
+                customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                offerIds
+        );
     }
 
     public Customer toEntity() {
@@ -31,13 +48,19 @@ public class CustomerDTO {
         customer.setId(this.id);
         customer.setName(this.name);
         customer.setEmail(this.email);
-        List<Offer> offers = this.offerIds.stream()
-                .map(offerId -> {
-                    Offer offer = new Offer();
-                    offer.setId(offerId);
-                    return offer;
-                })
-                .collect(Collectors.toList());
+        List<Offer> offers = new ArrayList<>();
+        if (this.offerIds == null) {
+            this.offerIds = new ArrayList<>();
+        }
+        if (this.offerIds != null || !this.offerIds.isEmpty()) {
+            offers = this.offerIds.stream()
+                    .map(offerId -> {
+                        Offer offer = new Offer();
+                        offer.setId(offerId);
+                        return offer;
+                    })
+                    .collect(Collectors.toList());
+        }
         customer.setOffers(offers);
         return customer;
     }
