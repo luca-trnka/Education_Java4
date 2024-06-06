@@ -77,7 +77,7 @@ public class OfferController {
     @GetMapping("/{id}/status")
     public OfferStatus getOfferStatus(@PathVariable Long id) {
         return offerService.getOfferStatus(Math.toIntExact(id))
-                .orElseThrow(() -> new ResourceNotFoundException("Offer with id \" + id + \" not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Offer with id " + id + " not found"));
     }
 
     @PutMapping("/{id}/status")

@@ -28,11 +28,17 @@ public class SupplierController {
     public SupplierDTO getSupplierById(@PathVariable Long id) {
         return supplierService.getSupplierById(Math.toIntExact(id))
                 .map(SupplierDTO::fromEntity)
-                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier with " + id + " not found"));
     }
 
     @PostMapping
     public SupplierDTO createSupplier(@RequestBody SupplierDTO supplierDTO) {
+        if (supplierService.supplierExistsByName(supplierDTO.getName())) {
+            throw new IllegalArgumentException("A customer with this name already exists");
+        }
+        if (supplierService.supplierExistsByEmail(supplierDTO.getEmail())) {
+            throw new IllegalArgumentException("A customer with this email already exists");
+        }
         Supplier supplier = supplierDTO.toEntity();
         supplierService.createSupplier(supplier);
         return SupplierDTO.fromEntity(supplier);

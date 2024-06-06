@@ -51,4 +51,12 @@ public class WorkerService {
     public boolean workerExists(int id) {
         return workerRepository.existsById(id);
     }
+
+    public boolean workerExistsByName(String name) {
+        return workerRepository.findByName(name).isPresent();
+    }
+
+    public boolean workerExistsByEmail(String email) {
+        return workerRepository.findByEmail(email).isPresent();
+    }
 }

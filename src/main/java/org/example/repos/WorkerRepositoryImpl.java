@@ -24,6 +24,16 @@ public class WorkerRepositoryImpl implements WorkerRepository {
     }
 
     @Override
+    public Optional<Worker> findByName(String name) {
+        return workers.stream().filter(customer -> customer.getName().equals(name)).findFirst();
+    }
+
+    @Override
+    public Optional<Worker> findByEmail(String email) {
+        return workers.stream().filter(customer -> customer.getEmail().equals(email)).findFirst();
+    }
+
+    @Override
     public void save(Worker worker) {
         worker.setId((long) counter.incrementAndGet());
         workers.add(worker);

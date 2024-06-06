@@ -1,5 +1,7 @@
 package org.example.dtos;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.example.models.Offer;
 import org.example.models.Supplier;
 import org.example.models.Worker;
@@ -10,7 +12,10 @@ import java.util.stream.Collectors;
 
 public class WorkerDTO {
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
+    @Email
     private String email;
     private List<Long> offerIds;
     private Long supplierId;

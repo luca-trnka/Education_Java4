@@ -38,4 +38,12 @@ public class CustomerService {
     public boolean customerExists(int id) {
         return customerRepository.existsById(id);
     }
+
+    public boolean customerExistsByName(String name) {
+        return customerRepository.findByName(name).isPresent();
+    }
+
+    public boolean customerExistsByEmail(String email) {
+        return customerRepository.findByEmail(email).isPresent();
+    }
 }

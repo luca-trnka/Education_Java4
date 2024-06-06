@@ -29,11 +29,17 @@ public class WorkerController {
     public WorkerDTO getWorkerById(@PathVariable Long id) {
         return workerService.getWorkerById(Math.toIntExact(id))
                 .map(WorkerDTO::fromEntity)
-                .orElseThrow(() -> new ResourceNotFoundException("Worker not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Worker with " + id + " not found\""));
     }
 
     @PostMapping
     public WorkerDTO createWorker(@RequestParam Long supplierId, @RequestBody WorkerDTO workerDTO) {
+        if (workerService.workerExistsByName(workerDTO.getName())) {
+            throw new IllegalArgumentException("A customer with this name already exists");
+        }
+        if (workerService.workerExistsByEmail(workerDTO.getEmail())) {
+            throw new IllegalArgumentException("A customer with this email already exists");
+        }
         Worker worker = workerDTO.toEntity();
         workerService.createWorker(supplierId, worker);
         return WorkerDTO.fromEntity(worker);

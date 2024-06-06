@@ -38,4 +38,12 @@ public class SupplierService {
     public boolean supplierExists(int id) {
         return supplierRepository.existsById(id);
     }
+
+    public boolean supplierExistsByName(String name) {
+        return supplierRepository.findByName(name).isPresent();
+    }
+
+    public boolean supplierExistsByEmail(String email) {
+        return supplierRepository.findByEmail(email).isPresent();
+    }
 }

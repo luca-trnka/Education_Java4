@@ -33,14 +33,17 @@ public class CustomerController {
     public CustomerDTO getCustomerById(@PathVariable Long id) {
         return customerService.getCustomerById(Math.toIntExact(id))
                 .map(CustomerDTO::fromEntity)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with " + id + " not found"));
     }
 
     @PostMapping
     public CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO) {
-//        List<Offer> offers = customerDTO.getOfferIds().stream()
-//                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer not found")))
-//                .collect(Collectors.toList());
+        if (customerService.customerExistsByName(customerDTO.getName())) {
+            throw new IllegalArgumentException("A customer with this name already exists");
+        }
+        if (customerService.customerExistsByEmail(customerDTO.getEmail())) {
+            throw new IllegalArgumentException("A customer with this email already exists");
+        }
         Customer customer = customerDTO.toEntity();
         customerService.createCustomer(customer);
         return CustomerDTO.fromEntity(customer);
@@ -49,7 +52,7 @@ public class CustomerController {
     @PutMapping("/{id}")
     public void updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
         List<Offer> offers = customerDTO.getOfferIds().stream()
-                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer not found")))
+                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer with id " + id + " not found")))
                 .collect(Collectors.toList());
         Customer customer = customerDTO.toEntity();
         customer.setId(id);
@@ -58,6 +61,9 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public void deleteCustomer(@PathVariable Long id) {
+        if (!customerService.customerExists(Math.toIntExact(id))) {
+            throw new ResourceNotFoundException("Customer with id " + id + " not found");
+        }
         customerService.deleteCustomer(Math.toIntExact(id));
     }
 }

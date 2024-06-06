@@ -24,6 +24,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    public Optional<Customer> findByName(String name) {
+        return customers.stream().filter(customer -> customer.getName().equals(name)).findFirst();
+    }
+
+    @Override
+    public Optional<Customer> findByEmail(String email) {
+        return customers.stream().filter(customer -> customer.getEmail().equals(email)).findFirst();
+    }
+
+    @Override
     public void save(Customer customer) {
         customer.setId((long) counter.incrementAndGet());
         customers.add(customer);

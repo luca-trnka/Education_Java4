@@ -23,6 +23,16 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     }
 
     @Override
+    public Optional<Supplier> findByName(String name) {
+        return suppliers.stream().filter(customer -> customer.getName().equals(name)).findFirst();
+    }
+
+    @Override
+    public Optional<Supplier> findByEmail(String email) {
+        return suppliers.stream().filter(customer -> customer.getEmail().equals(email)).findFirst();
+    }
+
+    @Override
     public void save(Supplier supplier) {
         supplier.setId((long) counter.incrementAndGet());
         suppliers.add(supplier);
