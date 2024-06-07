@@ -32,9 +32,6 @@ public class OfferService {
         return offerRepository.findById(id);
     }
 
-//    public void createOffer(Offer offer) {
-//        offerRepository.save(offer);
-//    }
     public void createOffer(Long supplierId, Long customerId, Offer offer) {
         Supplier supplier = supplierRepository.findById(Math.toIntExact(supplierId))
                 .orElseThrow(() -> new RuntimeException("Supplier not found"));

@@ -1,6 +1,8 @@
 package org.example.models;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +19,7 @@ public class Customer {
     private List<Offer> offers;
 
     public Customer() {
+        offers = new ArrayList<>();
     }
 
     public Customer(String name, String email, List<Offer> offers) {
