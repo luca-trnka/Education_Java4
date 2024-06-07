@@ -34,10 +34,10 @@ public class SupplierController {
     @PostMapping
     public SupplierDTO createSupplier(@RequestBody SupplierDTO supplierDTO) {
         if (supplierService.supplierExistsByName(supplierDTO.getName())) {
-            throw new IllegalArgumentException("A customer with this name already exists");
+            throw new IllegalArgumentException("A supplier with this name already exists");
         }
         if (supplierService.supplierExistsByEmail(supplierDTO.getEmail())) {
-            throw new IllegalArgumentException("A customer with this email already exists");
+            throw new IllegalArgumentException("A supplier with this email already exists");
         }
         Supplier supplier = supplierDTO.toEntity();
         supplierService.createSupplier(supplier);
@@ -46,6 +46,9 @@ public class SupplierController {
 
     @PutMapping("/{id}")
     public void updateSupplier(@PathVariable Long id, @RequestBody SupplierDTO supplierDTO) {
+        if (!supplierService.supplierExists(Math.toIntExact(id))) {
+            throw new ResourceNotFoundException("Supplier with id " + id + " not found");
+        }
         Supplier supplier = supplierDTO.toEntity();
         supplier.setId(id);
         supplierService.updateSupplier(supplier);
@@ -53,6 +56,9 @@ public class SupplierController {
 
     @DeleteMapping("/{id}")
     public void deleteSupplier(@PathVariable Long id) {
+        if (!supplierService.supplierExists(Math.toIntExact(id))) {
+            throw new ResourceNotFoundException("Supplier with id " + id + " not found");
+        }
         supplierService.deleteSupplier(Math.toIntExact(id));
     }
 }

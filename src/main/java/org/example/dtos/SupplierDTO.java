@@ -2,6 +2,7 @@ package org.example.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.example.models.Supplier;
 import org.example.models.Offer;
 import org.example.models.Worker;
@@ -13,9 +14,10 @@ import java.util.stream.Collectors;
 public class SupplierDTO {
     private Long id;
     @NotBlank
+    @Size(min = 5,max = 25, message = "Name size should be between 5 and 25 characters")
     private String name;
     @NotBlank
-    @Email
+    @Email(regexp=".+@.+\\..+", message = "Email formal is not valid")
     private String email;
     private List<Long> offerIds;
     private List<Long> workerIds;

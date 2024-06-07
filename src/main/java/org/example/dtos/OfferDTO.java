@@ -1,5 +1,8 @@
 package org.example.dtos;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.example.models.*;
 
 import java.util.ArrayList;
@@ -11,6 +14,8 @@ import static java.lang.String.valueOf;
 
 public class OfferDTO {
     private Long id;
+    @NotBlank
+    @Size(min = 5,max = 25, message = "Description size should be between 5 and 25 characters")
     private String description;
     private OfferStatus status;
     private Long customerId;

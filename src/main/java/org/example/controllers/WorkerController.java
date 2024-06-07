@@ -1,8 +1,10 @@
 package org.example.controllers;
 
+import jakarta.validation.Valid;
 import org.example.exceptions.ResourceNotFoundException;
 import org.example.dtos.WorkerDTO;
 import org.example.models.Worker;
+import org.example.services.SupplierService;
 import org.example.services.WorkerService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +15,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/workers")
 public class WorkerController {
     private final WorkerService workerService;
+    private final SupplierService supplierService;
 
-    public WorkerController(WorkerService workerService) {
+
+    public WorkerController(WorkerService workerService, SupplierService supplierService) {
         this.workerService = workerService;
+        this.supplierService = supplierService;
     }
 
     @GetMapping
@@ -33,12 +38,15 @@ public class WorkerController {
     }
 
     @PostMapping
-    public WorkerDTO createWorker(@RequestParam Long supplierId, @RequestBody WorkerDTO workerDTO) {
+    public WorkerDTO createWorker(@RequestParam Long supplierId, @Valid @RequestBody WorkerDTO workerDTO) {
+        if (!supplierService.supplierExists(Math.toIntExact(supplierId))) {
+            throw new ResourceNotFoundException("Supplier with id " + supplierId + " not found");
+        }
         if (workerService.workerExistsByName(workerDTO.getName())) {
-            throw new IllegalArgumentException("A customer with this name already exists");
+            throw new IllegalArgumentException("A worker with this name already exists");
         }
         if (workerService.workerExistsByEmail(workerDTO.getEmail())) {
-            throw new IllegalArgumentException("A customer with this email already exists");
+            throw new IllegalArgumentException("A worker with this email already exists");
         }
         Worker worker = workerDTO.toEntity();
         workerService.createWorker(supplierId, worker);
@@ -46,7 +54,10 @@ public class WorkerController {
     }
 
     @PutMapping("/{id}")
-    public void updateWorker(@PathVariable Long id, @RequestBody WorkerDTO workerDTO) {
+    public void updateWorker(@PathVariable Long id, @Valid @RequestBody WorkerDTO workerDTO) {
+        if (!workerService.workerExists(Math.toIntExact(id))) {
+            throw new ResourceNotFoundException("Worker with id " + id + " not found");
+        }
         Worker worker = workerDTO.toEntity();
         worker.setId(id);
         workerService.updateWorker(worker);
@@ -54,6 +65,9 @@ public class WorkerController {
 
     @DeleteMapping("/{id}")
     public void deleteWorker(@PathVariable Long id) {
+        if (!workerService.workerExists(Math.toIntExact(id))) {
+            throw new ResourceNotFoundException("Worker with id " + id + " not found");
+        }
         workerService.deleteWorker(Math.toIntExact(id));
     }
 }

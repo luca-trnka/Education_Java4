@@ -51,9 +51,9 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public void updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
-        List<Offer> offers = customerDTO.getOfferIds().stream()
-                .map(offerId -> offerService.getOfferById(offerId.intValue()).orElseThrow(() -> new ResourceNotFoundException("Offer with id " + id + " not found")))
-                .collect(Collectors.toList());
+        if (!customerService.customerExists(Math.toIntExact(id))) {
+            throw new ResourceNotFoundException("Customer with id " + id + " not found");
+        }
         Customer customer = customerDTO.toEntity();
         customer.setId(id);
         customerService.updateCustomer(customer);
