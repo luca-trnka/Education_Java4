@@ -22,7 +22,9 @@ public class OfferDTO {
     private Long supplierId;
     private List<Long> workerIds;
 
-    public OfferDTO() {}
+    public OfferDTO() {
+        workerIds = new ArrayList<>();
+    }
 
     public OfferDTO(Long id, String description, OfferStatus status, Long customerId, Long supplierId, List<Long> workerIds) {
         this.id = id;

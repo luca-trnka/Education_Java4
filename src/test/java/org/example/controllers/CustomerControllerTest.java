@@ -102,7 +102,7 @@ class CustomerControllerTest {
 
         mockMvc.perform(put("/customers/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
+                        .content("{\"name\":\"Johny\", \"email\":\"johny@example.com\"}"))
                 .andExpect(status().isOk());
     }
 

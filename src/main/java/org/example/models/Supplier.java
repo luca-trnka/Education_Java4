@@ -1,5 +1,7 @@
 package org.example.models;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +20,10 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Worker> workers;
 
-    public Supplier() {}
+    public Supplier() {
+        offers = new ArrayList<>();
+        workers = new ArrayList<>();
+    }
 
     public Supplier(String name, String email, List<Offer> offers, List<Worker> workers) {
         this.name = name;

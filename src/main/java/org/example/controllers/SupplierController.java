@@ -4,6 +4,8 @@ import org.example.exceptions.ResourceNotFoundException;
 import org.example.dtos.SupplierDTO;
 import org.example.models.Supplier;
 import org.example.services.SupplierService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,5 +62,10 @@ public class SupplierController {
             throw new ResourceNotFoundException("Supplier with id " + id + " not found");
         }
         supplierService.deleteSupplier(Math.toIntExact(id));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

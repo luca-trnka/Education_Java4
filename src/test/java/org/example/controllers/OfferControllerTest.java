@@ -112,6 +112,7 @@ public class OfferControllerTest {
         Long customerId = 2L;
         OfferDTO offerDTO = new OfferDTO();
         offerDTO.setId(1L);
+        offerDTO.setDescription("Something");
         when(supplierService.supplierExists(Math.toIntExact(supplierId))).thenReturn(true);
         when(customerService.customerExists(Math.toIntExact(customerId))).thenReturn(true);
         doNothing().when(offerService).createOffer(anyLong(), anyLong(), any(Offer.class));

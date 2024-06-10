@@ -1,6 +1,7 @@
 package org.example.models;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,9 @@ public class Worker {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
-    public Worker() {}
+    public Worker() {
+        offers = new ArrayList<>();
+    }
 
     public Worker(String name, String email, List<Offer> offers, Supplier supplier) {
         this.name = name;

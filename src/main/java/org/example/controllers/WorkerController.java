@@ -6,6 +6,8 @@ import org.example.dtos.WorkerDTO;
 import org.example.models.Worker;
 import org.example.services.SupplierService;
 import org.example.services.WorkerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,5 +71,10 @@ public class WorkerController {
             throw new ResourceNotFoundException("Worker with id " + id + " not found");
         }
         workerService.deleteWorker(Math.toIntExact(id));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }
